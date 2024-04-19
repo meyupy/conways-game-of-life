@@ -4,7 +4,7 @@ from sys import exit
 pygame.init()
 
 S_WIDTH = 960
-BG_COLOR_1, BG_COLOR_2 = (191, 191, 191), (159, 159, 159)
+BG_COLOR, BG_PANEL_COLOR = (191, 191, 191), (159, 159, 159)
 SQ_COLOR_1, SQ_COLOR_2 = (175, 175, 175), (127, 127, 127)
 BUTTON_COLOR_1, BUTTON_COLOR_2 = (143, 143, 143), (127, 127, 127)
 TEXT_COLOR_1, TEXT_COLOR_2 = (191, 191, 191), (95, 95, 95)
@@ -17,7 +17,7 @@ pygame.display.set_caption("Conway's Game of Life")
 
 clock = pygame.time.Clock()
 
-bg_rect = pygame.rect.Rect((3*S_WIDTH//4, 0), (S_WIDTH//4, 3*S_WIDTH//4))
+panel_rect = pygame.rect.Rect((3 * S_WIDTH // 4, 0), (S_WIDTH // 4, 3 * S_WIDTH // 4))
 
 game_name_1_surf = gui_font_large.render("Conway's", True, TEXT_COLOR_1)
 game_name_1_rect = game_name_1_surf.get_rect(center=(7*S_WIDTH//8, 5*S_WIDTH//48))
@@ -161,8 +161,8 @@ while True:
             pygame.quit()
             exit()
 
-    screen.fill(BG_COLOR_1)
-    pygame.draw.rect(screen, BG_COLOR_2, bg_rect)
+    screen.fill(BG_COLOR)
+    pygame.draw.rect(screen, BG_PANEL_COLOR, panel_rect)
     screen.blit(game_name_1_surf, game_name_1_rect)
     screen.blit(game_name_2_surf, game_name_2_rect)
 
