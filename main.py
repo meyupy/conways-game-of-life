@@ -29,54 +29,60 @@ GEN_NO_RECT_CENTER_POS = (7*S_WIDTH//8, 5*S_WIDTH//16)
 
 class Button:
 
-    def __init__(self, surface, text, pos, width, height, color_1, color_2, text_font, text_color):
+    def __init__(self, surface, text, font, x, y, width, height,
+                 button_color_1, button_color_2, text_color):
         self.surface = surface
-        self.width = width
-        self.height = height
-        self.pressed = False
-        self.body_rect = pygame.Rect(pos, (self.width, self.height))
-        self.color_1 = color_1
-        self.color_2 = color_2
-        self.body_color = self.color_1
-        self.text_surf = text_font.render(text, True, text_color)
+        self.button_color_1 = button_color_1
+        self.button_color_2 = button_color_2
+        self.color = button_color_1
+        self.border_radius = width // 10
+        self.body_rect = pygame.rect.Rect(x, y, width, height)
+        self.text_surf = font.render(text, True, text_color)
         self.text_rect = self.text_surf.get_rect(center=self.body_rect.center)
+        self.press_allowed = True
+        self.pressed = False
 
-    def draw(self):
-        pygame.draw.rect(self.surface, self.body_color, self.body_rect, border_radius=self.width//8)
-        self.surface.blit(self.text_surf, self.text_rect)
-
-    def check_button_clicked(self):
-        mouse_pos = pygame.mouse.get_pos()
-        if self.body_rect.collidepoint(mouse_pos):
-            self.body_color = self.color_2
-            if pygame.mouse.get_pressed()[0]:
+    def is_clicked(self):
+        mouse_pressed = pygame.mouse.get_pressed()[0]
+        if self.body_rect.collidepoint(pygame.mouse.get_pos()):
+            if mouse_pressed:
                 self.pressed = True
-            else:
-                if self.pressed:
-                    self.pressed = False
-                    return True
+            elif self.pressed and self.press_allowed:
+                self.pressed = False
+                return True
         else:
-            self.body_color = self.color_1
             self.pressed = False
+            if mouse_pressed:
+                self.press_allowed = False
+            else:
+                self.press_allowed = True
         return False
 
+    def draw(self):
+        if self.body_rect.collidepoint(pygame.mouse.get_pos()):
+            self.color = self.button_color_2
+        else:
+            self.color = self.button_color_1
+        pygame.draw.rect(self.surface, self.color, self.body_rect, border_radius=self.border_radius)
+        self.surface.blit(self.text_surf, self.text_rect)
 
-button_beginning = Button(screen, "<<", (25*S_WIDTH//32, 29*S_WIDTH//96), S_WIDTH//48, S_WIDTH//48,
-                          BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
-button_end = Button(screen, ">>", (91*S_WIDTH//96, 29*S_WIDTH//96), S_WIDTH//48, S_WIDTH//48,
-                    BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
-button_previous = Button(screen, "<", (13*S_WIDTH//16, 29*S_WIDTH//96), S_WIDTH//48, S_WIDTH//48,
-                         BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
-button_next = Button(screen, ">", (11*S_WIDTH//12, 29*S_WIDTH//96), S_WIDTH//48, S_WIDTH//48,
-                     BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
-button_ready = Button(screen, "Ready", (5 * S_WIDTH // 6, 17 * S_WIDTH // 48), S_WIDTH // 12, S_WIDTH // 24,
-                      BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
-button_play = Button(screen, "Play", (5*S_WIDTH//6, 5*S_WIDTH//12), S_WIDTH//12, S_WIDTH//24,
-                     BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
-button_stop = Button(screen, "Stop", (5*S_WIDTH//6, 5*S_WIDTH//12), S_WIDTH//12, S_WIDTH//24,
-                     BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
-button_start_new = Button(screen, "Start New", (5*S_WIDTH//6, S_WIDTH//2), S_WIDTH//12, S_WIDTH//24,
-                          BUTTON_COLOR_1, BUTTON_COLOR_2, gui_font, TEXT_COLOR_1)
+
+button_beginning = Button(screen, "<<", gui_font, 25 * S_WIDTH // 32, 29 * S_WIDTH // 96,
+                          S_WIDTH // 48, S_WIDTH // 48, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
+button_end = Button(screen, ">>", gui_font, 91 * S_WIDTH // 96, 29 * S_WIDTH // 96,
+                    S_WIDTH // 48, S_WIDTH // 48, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
+button_previous = Button(screen, "<", gui_font, 13 * S_WIDTH // 16, 29 * S_WIDTH // 96,
+                         S_WIDTH // 48, S_WIDTH // 48, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
+button_next = Button(screen, ">", gui_font, 11 * S_WIDTH // 12, 29 * S_WIDTH // 96,
+                     S_WIDTH // 48, S_WIDTH // 48, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
+button_ready = Button(screen, "Ready", gui_font, 5 * S_WIDTH // 6, 17 * S_WIDTH // 48,
+                      S_WIDTH // 12, S_WIDTH // 24, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
+button_play = Button(screen, "Play", gui_font, 5 * S_WIDTH // 6, 5 * S_WIDTH // 12,
+                     S_WIDTH // 12, S_WIDTH // 24, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
+button_stop = Button(screen, "Stop", gui_font, 5 * S_WIDTH // 6, 5 * S_WIDTH // 12,
+                     S_WIDTH // 12, S_WIDTH // 24, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
+button_start_new = Button(screen, "Start New", gui_font, 5 * S_WIDTH // 6, S_WIDTH // 2,
+                          S_WIDTH // 12, S_WIDTH // 24, BUTTON_COLOR_1, BUTTON_COLOR_2, TEXT_COLOR_1)
 
 
 class Square:
@@ -177,7 +183,7 @@ while True:
                     starting_permutation[r][c] = 1
                     square.is_alive = True
 
-        if button_ready.check_button_clicked():
+        if button_ready.is_clicked():
             current_permutation = [[n for n in line] for line in starting_permutation]
             current_index = 0
             max_seen_index = 0
@@ -204,13 +210,13 @@ while True:
             else:
                 animation_continues = False
         else:
-            if button_beginning.check_button_clicked():
+            if button_beginning.is_clicked():
                 current_index = 0
-            if button_end.check_button_clicked():
+            if button_end.is_clicked():
                 current_index = max_seen_index
-            if button_previous.check_button_clicked() and current_index > 0:
+            if button_previous.is_clicked() and current_index > 0:
                 current_index -= 1
-            if button_next.check_button_clicked() and current_index < len(generations)-1:
+            if button_next.is_clicked() and current_index < len(generations)-1:
                 current_index += 1
 
         if current_index > max_seen_index:
@@ -226,12 +232,12 @@ while True:
                 else:
                     square.is_alive = False
 
-        if not animation_continues and button_play.check_button_clicked():
+        if not animation_continues and button_play.is_clicked():
             animation_continues = True
-        elif animation_continues and button_stop.check_button_clicked():
+        elif animation_continues and button_stop.is_clicked():
             animation_continues = False
 
-        if button_start_new.check_button_clicked():
+        if button_start_new.is_clicked():
             for sq_row in squares:
                 for square in sq_row:
                     square.is_alive = False
