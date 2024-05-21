@@ -3,5 +3,5 @@
   <component name="Black">
     <option name="sdkName" value="Python 3.10 (conway's_game_of_life)" />
   </component>
-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (conway's_game_of_life)" project-jdk-type="Python SDK" />
+  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.10 (conways_game_of_life)" project-jdk-type="Python SDK" />
 </project>
